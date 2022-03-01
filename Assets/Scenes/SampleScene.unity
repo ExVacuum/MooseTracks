@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 2138677392}
-  m_IndirectSpecularColor: {r: 0.2850268, g: 0.37139338, b: 0.49601007, a: 1}
+  m_IndirectSpecularColor: {r: 0.028856363, g: 0.037454486, b: 0.05053648, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -714,13 +714,19 @@ VisualEffect:
       - m_Value: 5
         m_Name: Size
         m_Overridden: 1
-      - m_Value: 132
+      - m_Value: 254
         m_Name: AreaToCover
+        m_Overridden: 1
+      - m_Value: 50
+        m_Name: SnowDensity
         m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 1000, y: -1000, z: 0}
+        m_Name: WindVelocity
+        m_Overridden: 1
     m_Vector4f:
       m_Array: []
     m_Uint:
@@ -745,7 +751,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1785388041}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 71.83, z: 0}
+  m_LocalPosition: {x: 0, y: 125, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
