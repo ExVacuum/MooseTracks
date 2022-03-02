@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 1
   m_FogColor: {r: 0, g: 0, b: 0, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0.05
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -178,6 +178,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 218683497070972362, guid: 3b95be3def643d145ab1cf52aa0188a3, type: 3}
+      propertyPath: m_DrawTreesAndFoliage
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b95be3def643d145ab1cf52aa0188a3, type: 3}
 --- !u!1 &566738854
@@ -212,10 +216,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b39742a24366a04cb383dcaa0310b54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 9.59
-  jumpForce: 8.02
-  airStrafeModifier: 0.0012
-  slidingForceModifier: 0.002458
+  moveSpeed: 10
+  airStrafeModifier: 0.005
   fallDistanceBuffer: 0.0421
 --- !u!4 &566738856
 Transform:
@@ -225,12 +227,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 566738854}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.39514637, y: -0.34232187, z: 0}
+  m_LocalPosition: {x: -0.39514637, y: -0.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1687258585}
   m_Father: {fileID: 926440042}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &566738857
 CapsuleCollider:
@@ -261,7 +263,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &566738859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -444,9 +446,10 @@ Transform:
   m_LocalPosition: {x: -6.5, y: 3.4, z: 84.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 1785388044}
   - {fileID: 566738856}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 160, z: 0}
 --- !u!1 &1540857182
 GameObject:
@@ -664,6 +667,7 @@ GameObject:
   - component: {fileID: 1785388044}
   - component: {fileID: 1785388043}
   - component: {fileID: 1785388042}
+  - component: {fileID: 1785388045}
   m_Layer: 0
   m_Name: Snowfall VFX
   m_TagString: Untagged
@@ -730,17 +734,17 @@ VisualEffect:
       - m_Value: 5
         m_Name: Size
         m_Overridden: 1
-      - m_Value: 254
+      - m_Value: 50
         m_Name: AreaToCover
         m_Overridden: 1
-      - m_Value: 50
+      - m_Value: 5
         m_Name: SnowDensity
         m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: 1000, y: -1000, z: 0}
+      - m_Value: {x: 10, y: -50, z: 0}
         m_Name: WindVelocity
         m_Overridden: 1
     m_Vector4f:
@@ -767,12 +771,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1785388041}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 125, z: 0}
+  m_LocalPosition: {x: 0, y: 10, z: -4.920001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_Father: {fileID: 926440042}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1785388045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785388041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 822d74dd39ed4e34ebf48f0a2bc830ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 566738854}
 --- !u!1 &2138677391
 GameObject:
   m_ObjectHideFlags: 0

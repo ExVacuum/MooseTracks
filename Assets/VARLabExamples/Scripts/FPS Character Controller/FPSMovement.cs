@@ -30,16 +30,12 @@ namespace TigerTail.FPSController
         {
             /// <summary>This player is moving via their own inputs.</summary>
             Moving = 1,
-            /// <summary>The player is currently jumping.</summary>
-            Jumping = 1 << 1,
             /// <summary>The player is currently falling.</summary>
             Falling = 1 << 2,
             /// <summary>The player has been immobilized and cannot move themselves.</summary>
             Immobilized = 1 << 3,
             /// <summary>The player has been knocked back by an external force.</summary>
-            Knockback = 1 << 4,
-            /// <summary>The player has been set to slide rather than have instant movement response during normal movement.</summary>
-            Sliding = 1 << 5
+            Knockback = 1 << 4
         }
         private State state;
 
@@ -47,34 +43,15 @@ namespace TigerTail.FPSController
         [Range(0.1f, 20f)]
         [SerializeField] private float moveSpeed = 10f;
 
-        [Tooltip("Force of the player's jump.")]
-        [Range(4f, 10f)]
-        [SerializeField] private float jumpForce = 6f;
-
         [Tooltip("Player's ability to influence their movement mid-air.")]
         [Range(0.001f, 0.005f)]
         [SerializeField] private float airStrafeModifier = 0.003f;
-
-        [Tooltip("Percentage of movement speed to convert to sliding force while sliding.")]
-        [Range(0.002f, 0.004f)]
-        [SerializeField] private float slidingForceModifier = 0.0025f;
 
         [Tooltip("Distance below player required for them to be considered falling.\nIncrease this value if you find you can't jump while moving downhill slightly.")]
         [Range(0.01f, 0.2f)]
         [SerializeField] private float fallDistanceBuffer = 0.1f;
 
-        /// <summary>Time the player last jumped at.</summary>
-        private float lastJumpTime;
-
         public Vector3 ExternalVelocity { get; set; }
-
-        /// <summary>Whether the player is sliding across a surface or not.</summary>
-        /// <remarks>Set this to help the player slide down a slope or across an icy surface.</remarks>
-        public bool IsSliding
-        {
-            get { return state.HasFlag(State.Sliding); }
-            set { ToggleState(State.Sliding, value); }
-        }
 
         private void Awake()
         {
@@ -85,9 +62,8 @@ namespace TigerTail.FPSController
         private void Update()
         {
             var moveVelocity = HandleMovement();
-            var jumpVelocity = HandleJumping();
 
-            HandleMovementByState(moveVelocity, jumpVelocity);
+            HandleMovementByState(moveVelocity);
         }
 
         // Fixed Update was used for this as it is Physics code and all Unity physics runs on this loop.
@@ -100,10 +76,6 @@ namespace TigerTail.FPSController
         /// <summary>Checks if the player is currently touching the ground and sets their state accordingly.</summary>
         private void CheckIfTouchingGround()
         {
-            const float JUMP_GRACE_TIME = 0.35f;
-            if (state.HasFlag(State.Jumping) && Time.time - JUMP_GRACE_TIME < lastJumpTime) // We just started a jump, don't immediately ground us.
-                return;
-
             // Our sphere collider extends above and below this object's actual position in space by half of its height.
             // This means the floor is half the height of the capsule collider below us.
             // To check if we're touching the ground we need to see if a ray fired downwards that's half of our height touches the floor.
@@ -112,7 +84,7 @@ namespace TigerTail.FPSController
 
             if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, fallingRayDistance))
             {
-                ToggleState(State.Jumping | State.Falling, false);
+                ToggleState(State.Falling, false);
                 var adjustedPosition = transform.position;
                 adjustedPosition.y = hit.point.y + cc.height / 2;
                 transform.position = adjustedPosition;
@@ -125,32 +97,16 @@ namespace TigerTail.FPSController
 
         /// <summary>Handles movement on a per-state basis.</summary>
         /// <remarks>If the user is airborne they will need force-based control, while normal movement should be instantaneous.</remarks>
-        private void HandleMovementByState(Vector3 moveVelocity, Vector3 jumpVelocity)
+        private void HandleMovementByState(Vector3 moveVelocity)
         {
-            if (HasAnyState(State.Jumping | State.Falling | State.Knockback))
-                rb.AddForce(moveVelocity * airStrafeModifier + jumpVelocity, ForceMode.VelocityChange);
-            else if (state.HasFlag(State.Sliding))
-                rb.AddForce(moveVelocity * slidingForceModifier, ForceMode.VelocityChange);
+            if (HasAnyState(State.Falling | State.Knockback))
+                rb.AddForce(moveVelocity * airStrafeModifier, ForceMode.VelocityChange);
             else if (state.HasFlag(State.Moving))
-                rb.velocity = moveVelocity + ExternalVelocity;
-            else
-                rb.velocity = ExternalVelocity;
-        }
-
-        /// <summary>Returns the velocity vector for a jump.</summary>
-        private Vector3 HandleJumping()
-        {
-            if (HasAnyState(State.Jumping | State.Falling | State.Knockback | State.Immobilized))
-                return Vector3.zero;
-
-            if (Input.GetKeyDown(KeyCode.Space))
             {
-                ToggleState(State.Jumping, true);
-                lastJumpTime = Time.time;
-                return Vector3.up * jumpForce;
-            }
-
-            return Vector3.zero;
+                Debug.Log($"{moveVelocity}");
+                rb.velocity = moveVelocity + ExternalVelocity;
+            } else
+                rb.velocity = ExternalVelocity;
         }
 
         /// <summary>Returns the velocity vector for regular movement.</summary>
