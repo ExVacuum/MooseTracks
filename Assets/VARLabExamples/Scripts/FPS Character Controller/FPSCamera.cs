@@ -16,8 +16,7 @@ namespace TigerTail.FPSController
     public class FPSCamera : MonoBehaviour
     {
         [Tooltip("Mouse sensitivity for camera rotation.")]
-        [Range(50, 500)]
-        [SerializeField] private float mouseSensitivity = 100f;
+        [SerializeField] private float mouseSensitivity = 1f;
 
         [Tooltip("Transform of the player's body so that it can be rotated with the camera.")]
         [SerializeField] private Transform playerBody;
@@ -34,8 +33,8 @@ namespace TigerTail.FPSController
 
         private void Update()
         {
-            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-            float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+            float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
             xRotation -= mouseY;
             xRotation = Mathf.Clamp(xRotation, -90f, 90f);
