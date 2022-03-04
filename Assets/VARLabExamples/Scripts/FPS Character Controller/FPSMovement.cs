@@ -13,9 +13,6 @@ namespace TigerTail.FPSController
         [Tooltip("Player Movement Speed (m/s)")]
         [SerializeField] private float moveSpeed = 1;
 
-        [Tooltip("Maximum distance to ground")]
-        [SerializeField] private float maxGroundDistance = 0.001f;
-
         private CharacterController cc;
         private Vector3 velocity;
 
@@ -31,15 +28,10 @@ namespace TigerTail.FPSController
             velocity.y += Physics.gravity.y * Time.deltaTime;
             velocity.z = movement.z;
             cc.Move(velocity * Time.deltaTime);
-            if(Physics.Raycast(cc.transform.position, Vector3.down, cc.height+cc.skinWidth+maxGroundDistance, 1 << LayerMask.NameToLayer("Ground")))
+            if(cc.isGrounded)
             {
                 velocity.y = 0;
             }
         }
-
-        private void FixedUpdate()
-        {
-        }
-
     }
 }
