@@ -1,3 +1,10 @@
+/**
+* Player.cs
+*
+* This script performs various non-movement related functions.
+* For the player game object. This includes various sound effects.
+*/
+
 using UnityEngine;
 
 namespace TigerTail.FPSController
@@ -24,41 +31,70 @@ namespace TigerTail.FPSController
         private CharacterController cc;
         private AudioClip[] materialFootstepSet;
 
-        // Start is called before the first frame update
         void Start()
         {
+            // Have no sound by default.
+            materialFootstepSet = snowFootstepSounds;
+        }
+
+        void Awake() 
+        {
             cc = GetComponent<CharacterController>();
-            materialFootstepSet = new AudioClip[0];
         }
 
         private void OnControllerColliderHit(ControllerColliderHit other) {
-            if(other.gameObject.layer == LayerMask.NameToLayer("Ground")) {
-                materialFootstepSet = snowFootstepSounds;
-                return;
-            }
-            if(other.gameObject.layer == LayerMask.NameToLayer("Wood")) {
-                materialFootstepSet = woodFootstepSounds;
-                return;
-            }
+            DetermineStepSoundSet(other);
         }
 
         private void LateUpdate()
         {
+            // Toggle Flashlight on 'F' Keypress
             if(Input.GetKeyDown(KeyCode.F))
             {
-                flashlight.SetActive(!flashlight.activeSelf);
-                audioSource.PlayOneShot(flashlightSound);
+                ToggleFlashlight();
             }
+            HandleFootsteps();
+        }
+
+        // Sets the footstep sound effect set based on the layer stepped on.
+        private void DetermineStepSoundSet(ControllerColliderHit other) {
+            
+            // If on wooden structures use the wood sound effects
+            if(LayerIn(1 << other.gameObject.layer, 1 << LayerMask.NameToLayer("Wood"))) {
+                materialFootstepSet = woodFootstepSounds;
+                return;
+            }           
+            
+            /* If no other material is being walked on,
+               default to snow sound effects. */
+            materialFootstepSet = snowFootstepSounds;
+        }
+
+        // Toggles flashlight and plays click sound
+        private void ToggleFlashlight() {
+            flashlight.SetActive(!flashlight.activeSelf);
+            audioSource.PlayOneShot(flashlightSound);
+        }
+
+        // Handles the playing of footstep sound effects
+        private void HandleFootsteps() {
             if(
                 cc.isGrounded
                 && cc.velocity.magnitude >= 1
                 && !audioSource.isPlaying
             ) {
+                // Choose random sound
                 int soundIndex = Random.Range(0, materialFootstepSet.Length);
                 audioSource.clip = materialFootstepSet[soundIndex];
+                
+                // Play the sound, delaying it based on speed of player
                 audioSource.PlayDelayed(1/cc.velocity.magnitude);
             }
         }
 
+        // Returns true if layer is one of the layers in the provided bitmask
+        private bool LayerIn(int layer, int layerMask) {
+            return (layer & layerMask) != 0;
+        }
     }
 }

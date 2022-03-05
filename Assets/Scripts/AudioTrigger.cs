@@ -1,5 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+/**
+* AudioTrigger.cs
+* 
+* This class contains code for the "AudioTrigger" prefab,
+* which triggers a sound once when a sphere collider is triggered.
+*/
 using UnityEngine;
 
 [RequireComponent(typeof(SphereCollider))]
@@ -20,6 +24,6 @@ public class AudioTrigger : MonoBehaviour
     void OnTriggerEnter()
     {
         audioSource.Play();
-        sc.enabled = false;
+        sc.enabled = false; // Prevent triggering multiple times.
     }
 }

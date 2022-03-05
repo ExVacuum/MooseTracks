@@ -16,7 +16,7 @@ namespace TigerTail.FPSController
     public class FPSCamera : MonoBehaviour
     {
         [Tooltip("Mouse sensitivity for camera rotation.")]
-        [SerializeField] private float mouseSensitivity = 1f;
+        [SerializeField] private float mouseSensitivity = 1f; // Change made by Silas Bartha: Made default sensitivity 1.0
 
         [Tooltip("Transform of the player's body so that it can be rotated with the camera.")]
         [SerializeField] private Transform playerBody;
@@ -33,6 +33,10 @@ namespace TigerTail.FPSController
 
         private void Update()
         {
+            /* Change made here by Silas Bartha:
+               Removed scaling mouse input by delta time,
+               as this actually makes look speed dependent
+               on framerate. */
             float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
             float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 

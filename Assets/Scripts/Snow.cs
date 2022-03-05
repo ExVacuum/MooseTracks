@@ -1,3 +1,10 @@
+/**
+* Snow.cs
+* 
+* This script is used with the Snowfall VFX to keep the
+* snow positioned over the head of the player.
+*/
+
 using UnityEngine;
 
 public class Snow : MonoBehaviour
@@ -5,17 +12,19 @@ public class Snow : MonoBehaviour
     [Tooltip("Player object to follow.")]
     [SerializeField] private GameObject player;
 
+    // Offset from VFX graph object to player
     private Vector3 offset;
 
-    // Start is called before the first frame update
     void Start()
     {
+        // Determine offset at start
         offset = transform.position - player.transform.position;
     }
 
-    // Update is called once per frame
     void LateUpdate()
     {
+        /* Apply offset to player position to determine 
+        where the snowfall object should be. */
         transform.position = player.transform.position + offset;
     }
 }
