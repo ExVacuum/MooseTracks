@@ -35,6 +35,7 @@ public class EndCredits : MonoBehaviour
     // Sphere collider triggering will cause credits to begin.
     void OnTriggerEnter(Collider other) {
         StartCoroutine(PlayCredits());
+        sc.enabled = false;
     }
 
     IEnumerator PlayCredits() {
